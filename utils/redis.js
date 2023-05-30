@@ -1,4 +1,5 @@
-const redis = require('redis')
+import redis from 'redis'
+import { promisify } from 'util'
 
 
 class RedisClient{
@@ -6,57 +7,31 @@ class RedisClient{
     this.client = redis.createClient({
       url: 'redis://127.0.0.1:6379'
     });
+
     this.client.on('error', (err) => {
       console.log(err);
     });
   }
-  isAlive = () => {
-    this.client.on('connect', () => {
-      console.log(true);
-    });
 
-    this.client.on('error', () => {
-      console.log(false);
-    });
+  isAlive() {
+    return this.client.connected;
   }
 
   get(key) {
-    return new Promise((resolve, reject) => {
-      this.client.get(key, (err, reply) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(reply);
-        }
-      });
-    });
+    const get = promisify(this.client.get).bind(this.client);
+    return get(key);
   }
 
   set(key, value, duration) {
-    return new Promise((resolve, reject) => {
-      this.client.setex(key, duration, value, (err, reply) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(reply);
-        }
-      });
-    });
+    const set = promisify(this.client.setex).bind(this.client);
+    return set(key, duration, value)
   }
 
   del(key) {
-    return new Promise((resolve, reject) => {
-      this.client.del(key, (err, reply) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(reply);
-        }
-      });
-    });
+    const del = promisify(this.client.del).bind(this.client);
+    return del(key);
   }
 }
 
-const redisClient = new RedisClient()
-
-module.exports = redisClient;
+const redisClient = new RedisClient();
+export default redisClient;
