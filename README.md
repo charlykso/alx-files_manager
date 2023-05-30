@@ -50,3 +50,15 @@ At the end of this project, you are expected to be able to explain to anyone, wi
   * A README.md file, at the root of the folder of the project, is mandatory
   * Your code should use the js extension
   * Your code will be verified against lint using ESLint
+
+## Provided files
+
+* [package.json](./package.json)
+
+* [.eslintrc.js](./.eslintrc.js)
+
+* [babel.config.js](./babel.config.js)
+
+and…
+
+Don’t forget to run `$ npm install` when you have the `package.json`
